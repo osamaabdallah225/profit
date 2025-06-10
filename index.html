@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>تسجيل موقعك</title>
+</head>
+
+<body>
+    <h2>جارٍ تحديد موقعك...</h2>
+
+    <script>
+        const endpoint = "https://script.google.com/macros/s/AKfycbwzaDlrAgsm9bQJGOArr0b19c0qokadzhP46LEo0wPOP466Dy3cisHS12uZ_WLnRnio/exec"; // ← ضع هنا رابط Google Script
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const data = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+
+                fetch(endpoint, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                }).then(() => {
+                    document.body.innerHTML += "<p>تم إرسال موقعك بنجاح!</p>";
+                }).catch(err => {
+                    document.body.innerHTML += "<p>حدث خطأ أثناء الإرسال.</p>";
+                });
+
+            }, function (error) {
+                document.body.innerHTML += `<p>خطأ في تحديد الموقع: ${error.message}</p>`;
+            });
+        } else {
+            document.body.innerHTML += "<p>المتصفح لا يدعم تحديد الموقع.</p>";
+        }
+    </script>
+</body>
+
+</html>
