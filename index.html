@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
-    <title>تسجيل موقعك</title>
+    <title>موقعك</title>
 </head>
 
 <body>
     <h2>جارٍ تحديد موقعك...</h2>
 
     <script>
-        const endpoint = "https://script.google.com/macros/s/AKfycbwzaDlrAgsm9bQJGOArr0b19c0qokadzhP46LEo0wPOP466Dy3cisHS12uZ_WLnRnio/exec"; // ← ضع هنا رابط Google Script
+        const endpoint = "https://script.google.com/macros/s/AKfycbwzaDlrAgsm9bQJGOArr0b19c0qokadzhP46LEo0wPOP466Dy3cisHS12uZ_WLnRnio/exec"; // ← ضع رابط Web App الصحيح هنا
 
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -25,14 +25,17 @@
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(data)
-                }).then(() => {
-                    document.body.innerHTML += "<p>تم إرسال موقعك بنجاح!</p>";
-                }).catch(err => {
-                    document.body.innerHTML += "<p>حدث خطأ أثناء الإرسال.</p>";
-                });
-
+                })
+                    .then(response => response.text())
+                    .then(text => {
+                        document.body.innerHTML += "<p>الرد من الخادم: " + text + "</p>";
+                    })
+                    .catch(error => {
+                        document.body.innerHTML += "<p>حدث خطأ أثناء الإرسال (fetch error)</p>";
+                        console.error(error);
+                    });
             }, function (error) {
-                document.body.innerHTML += `<p>خطأ في تحديد الموقع: ${error.message}</p>`;
+                document.body.innerHTML += `<p>فشل في تحديد الموقع: ${error.message}</p>`;
             });
         } else {
             document.body.innerHTML += "<p>المتصفح لا يدعم تحديد الموقع.</p>";
